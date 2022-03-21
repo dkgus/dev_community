@@ -117,4 +117,44 @@ router.post(
   }
 );
 
+/**
+ *  @route  GET api/profile
+ *  @desc   Get all profiles
+ *  @access Public
+ */
+
+router.get("/", async (req, res) => {
+  try {
+    const profiles = await Profile.find().populate("user", ["name", "avatar"]);
+    res.json(profiles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+/**
+ *  @route  GET api/profile/user/:user_id
+ *  @desc   Get profile by user ID
+ *  @access Public
+ */
+
+router.get("/user/:user_id", async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.params.user_id,
+    }).populate("user", ["name", "avatar"]);
+    //id가 url로부터 오기때문에 params.id가 됨
+
+    if (!profile)
+      return res.status(400).json({ msg: "프로필이 존재하지않습니다" });
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === "ObjectId") {
+      return res.status(400).json({ msg: "프로필이 존재하지않습니다" });
+    }
+    res.status(500).send("Server Error");
+  }
+});
 module.exports = router;
