@@ -157,4 +157,27 @@ router.get("/user/:user_id", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+/**
+ *  @route  DELETE api/profile
+ *  @desc   Delete profile & user & posts
+ *  @access Private
+ */
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    await Promise.all([
+      //@todo remove user posts
+      Profile.findOneAndRemove({ user: req.user.id }),
+      User.findOneAndRemove({ _id: req.user.id }),
+    ]);
+
+    //user model 안에는 user가 없기때문에 _id로 조회해야함
+
+    res.json({ msg: "삭제되었습니다" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 module.exports = router;
