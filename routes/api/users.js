@@ -14,12 +14,9 @@ const User = require("../../models/User");
 // @access   Public
 router.post(
   "/",
-  check("name", "Name is required").notEmpty(),
-  check("email", "Please include a valid email").isEmail(),
-  check(
-    "password",
-    "Please enter a password with 6 or more characters"
-  ).isLength({ min: 6 }),
+  check("name", "이름을 작성해주세요").notEmpty(),
+  check("email", "이메일 양식을 사용해주세요").isEmail(),
+  check("password", "6자 이내로 발급해주세요").isLength({ min: 6 }),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -34,7 +31,7 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
+          .json({ errors: [{ msg: "이미 존재하는 유저입니다" }] });
       }
 
       const avatar = normalize(

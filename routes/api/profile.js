@@ -103,13 +103,13 @@ router.post(
           { $set: profileFileds },
           { new: true }
         );
-        return res.json(profile);
+        return res.json({ msg: "수정되었습니다", profile });
       }
 
       // Create
       profile = new Profile(profileFileds);
       await profile.save();
-      return res.json(profile);
+      return res.json({ msg: "생성되었습니다", profile });
     } catch (err) {
       console.error(err.message);
       return res.status(500).send("Server Error");
@@ -168,8 +168,8 @@ router.delete("/", auth, async (req, res) => {
   try {
     await Promise.all([
       //@todo remove user posts
-      Profile.findOneAndRemove({ user: req.user.id }),
-      User.findOneAndRemove({ _id: req.user.id }),
+      await Profile.findOneAndRemove({ user: req.user.id }),
+      await User.findOneAndRemove({ _id: req.user.id }),
     ]);
 
     //user model 안에는 user가 없기때문에 _id로 조회해야함

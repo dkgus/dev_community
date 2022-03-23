@@ -45,13 +45,10 @@ router.post(
 
     try {
       let user = await User.findOne({ email });
-
       if (!user) {
         return res.status(400).json({ errors: [{ msg: "없는 회원입니다" }] });
       }
-
       const isMatch = await bcrypt.compare(password, user.password);
-
       if (!isMatch) {
         return res
           .status(400)
