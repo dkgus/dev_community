@@ -202,25 +202,21 @@ router.put(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { title, company, location, from, to, current, description } =
-      req.body;
-
-    const newExp = {
-      title,
-      company,
-      location,
-      from,
-      to,
-      current,
-      description,
-    };
-
     try {
-      const profile = await Profile.findOne({ user: req.user.id });
-      profile.experience.unshift(newExp);
+      Profile.findOne({ user: req.user.id }).then((profile) => {
+        console.log("req.user_id", req.user.id);
+        if (!profile) return;
 
-      await profile.save();
-      res.json(profile);
+        const newExp = {
+          title: req.body.title,
+          company: req.body.company,
+          from: req.body.from,
+        };
+
+        profile.experience.unshift(newExp);
+        profile.save();
+        res.json({ msg: "저장되었습니다.", profile });
+      });
     } catch (err) {
       console.error(err.message);
       res.status(500).json("Server Error");
