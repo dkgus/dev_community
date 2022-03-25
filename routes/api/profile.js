@@ -186,7 +186,7 @@ router.delete("/", auth, async (req, res) => {
  *  @desc   add profile experience
  *  @access private
  */
-router.put(
+router.patch(
   "/experience",
   [
     auth,
@@ -211,9 +211,54 @@ router.put(
           title: req.body.title,
           company: req.body.company,
           from: req.body.from,
+          location: req.body.location,
+          to: req.body.to,
+          current: true,
+          description: req.body.description,
         };
 
         profile.experience.unshift(newExp);
+        profile.save();
+        res.json({ msg: "저장되었습니다.", profile });
+      });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json("Server Error");
+    }
+  }
+);
+
+/**
+ *  @route  PATCH api/profile/education
+ *  @desc   add profile education
+ *  @access private
+ */
+router.patch(
+  "/education",
+  auth,
+  [
+    check("school", "학교를 입력해주세요").not().isEmpty(),
+    check("degree", "학위를 입력해주세요").not().isEmpty(),
+    check("fieldofstudy", "전공을 입력해주세요").not().isEmpty(),
+    check("from", "입학일을 기입해주세요").not().isEmpty(),
+  ],
+  (req, res) => {
+    try {
+      Profile.findOne({ user: req.user.id }).then((profile) => {
+        console.log("req.user.id", req.user.id);
+        if (!profile) return;
+
+        const newEdu = {
+          school: req.body.school,
+          degree: req.body.degree,
+          fieldofstudy: req.body.fieldofstudy,
+          from: req.body.from,
+          to: req.body.to,
+          current: false,
+          description: req.body.description,
+        };
+
+        profile.education.unshift(newEdu);
         profile.save();
         res.json({ msg: "저장되었습니다.", profile });
       });
