@@ -229,6 +229,31 @@ router.patch(
 );
 
 /**
+ *  @route  DELETE api/profile/experience/:exp_id
+ *  @desc   delete experience from profile
+ *  @access private
+ */
+router.delete("/experience/:exp_id", auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    //get remove index(experience._id를 찾는 것)
+    const removeIndex = profile.experience
+      .map((itme) => itme.id)
+      .indexOf(req.params.exp_id);
+
+    profile.experience.splice(removeIndex, 1);
+    await profile.save();
+    console.log("removeIndex", removeIndex);
+
+    res.json({ msg: "삭제되었습니다" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server Error");
+  }
+});
+
+/**
  *  @route  PATCH api/profile/education
  *  @desc   add profile education
  *  @access private
@@ -268,5 +293,29 @@ router.patch(
     }
   }
 );
+
+/**
+ *  @route  DELETE api/profile/education/:edu_id
+ *  @desc   delete education from profile
+ *  @access private
+ */
+router.delete("/education/:edu_id", auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    //get remove index(education._id를 찾는 것)
+    const removeIndex = profile.education
+      .map((itme) => itme.id)
+      .indexOf(req.params.edu_id);
+
+    profile.education.splice(removeIndex, 1);
+    await profile.save();
+
+    res.json({ msg: "삭제되었습니다" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server Error");
+  }
+});
 
 module.exports = router;
