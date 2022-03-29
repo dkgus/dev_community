@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth"); //사용자의 id를 가져오기위해 auth필요
 const { check, validationResult } = require("express-validator");
+const request = require("request");
+const config = require("config");
 
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
@@ -312,6 +314,40 @@ router.delete("/education/:edu_id", auth, async (req, res) => {
     await profile.save();
 
     res.json({ msg: "삭제되었습니다" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server Error");
+  }
+});
+
+/**
+ *  @route  GET api/profile/github/:username
+ *  @desc   get user repos from github
+ *  @access public
+ */
+router.get("/github/:username", async (req, res) => {
+  try {
+    const options = {
+      uri: `https://api.github.com/users/${
+        req.params.username
+      }/repos?per_page=5&sort=created:asc&client_id=${config.get(
+        "githubClientId"
+      )}&client_secret=${config.get("githubSecret")}`,
+      method: "GET",
+      headers: { "user-agent": "node.js" },
+    };
+
+    request(options, (error, response, body) => {
+      if (error) console.error(error);
+
+      if (response.statusCode !== 200) {
+        return res
+          .status(404)
+          .json({ msg: "깃허브 프로필을 찾을 수 없습니다" });
+      }
+
+      res.json(JSON.parse(body));
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server Error");

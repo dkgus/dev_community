@@ -5,6 +5,7 @@ const auth = require("../../middleware/auth"); //사용자의 id를 가져오기
 
 const User = require("../../models/User");
 const Post = require("../../models/Post");
+const Profile = require("../../models/Profile");
 
 /**
  *  @route  POST api/posts
@@ -15,7 +16,7 @@ const Post = require("../../models/Post");
 router.post(
   "/",
   auth,
-  check("text", "글을 입력해주세요").notEmpty(),
+  [check("text", "글을 입력해주세요").notEmpty()],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -23,9 +24,7 @@ router.post(
     }
 
     try {
-      const user = await User.findOne({ user: req.user.id }).select(
-        "-password"
-      );
+      const user = await User.findById(req.user.id).select("-password");
       const newPost = new Post({
         text: req.body.text,
         name: user.name,
@@ -49,11 +48,64 @@ router.post(
  */
 router.get("/", auth, async (req, res) => {
   try {
-    const post = await Post.find().sort({ date: -1 });
-    res.json(post);
+    const posts = await Post.find().sort({ date: -1 });
+    res.json(posts);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Sever error");
+  }
+});
+
+/**
+ *  @route  POST api/posts/:id
+ *  @desc   get post by id
+ *  @access private
+ */
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    //한개의 포스트(포스트자체의id)
+    if (!post) {
+      return res.status(404).json({ msg: "포스트가 없습니다." });
+    }
+    res.json(post);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ msg: "포스트가 없습니다." });
+    }
+    res.status(500).send("Sever error");
+  }
+});
+
+/**
+ *  @route  DELETE api/posts/:id
+ *  @desc   delete a post
+ *  @access private
+ */
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    //const post = await Post.findById(req.params.id);
+    const post = await Post.deleteOne({ _id: req.params.id });
+
+    console.log("post", post);
+    if (!post) {
+      return res.status(404).json({ msg: "포스트가 없습니다." });
+    }
+
+    // Check user
+    // if (post.user.toString() !== req.user.id) {
+    //   return res.status(401).json({ msg: 'User not authorized' });
+    // }
+
+    //await post.remove();
+    res.json({ msg: "포스트가 삭제되었습니다" });
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ msg: "포스트가 없습니다." });
+    }
+    res.status(500).send("Server error");
   }
 });
 
