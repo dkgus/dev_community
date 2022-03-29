@@ -6,6 +6,7 @@ const auth = require("../../middleware/auth"); //사용자의 id를 가져오기
 const User = require("../../models/User");
 const Post = require("../../models/Post");
 const Profile = require("../../models/Profile");
+const { json } = require("express/lib/response");
 
 /**
  *  @route  POST api/posts
@@ -105,6 +106,30 @@ router.delete("/:id", auth, async (req, res) => {
     if (err.kind === "ObjectId") {
       return res.status(404).json({ msg: "포스트가 없습니다." });
     }
+    res.status(500).send("Server error");
+  }
+});
+
+/**
+ *  @route  PUT api/posts/like/:id
+ *  @desc   Like a post
+ *  @access private
+ */
+router.put("/like/:id", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    
+    if (post.likes.some((like) => like.user.toString() === req.user.id)) {
+      return res.status(400).json({ msg: "이미 좋아요한 게시물 입니다" });
+    }
+    post.likes.unshift({ user: req.user.id });
+
+    await post.save();
+    res.json(post.likes);
+  } catch (err) {
+    console.error(err.message);
+
     res.status(500).send("Server error");
   }
 });
