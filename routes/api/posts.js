@@ -30,7 +30,7 @@ router.post(
         text: req.body.text,
         name: user.name,
         avatar: user.avatar,
-        user: req.user.user,
+        user: req.user.id,
       });
 
       const post = await newPost.save();
@@ -86,20 +86,19 @@ router.get("/:id", auth, async (req, res) => {
  */
 router.delete("/:id", auth, async (req, res) => {
   try {
-    //const post = await Post.findById(req.params.id);
-    const post = await Post.deleteOne({ _id: req.params.id });
+    const post = await Post.findById(req.params.id);
+    //const post = await Post.deleteOne({ _id: req.params.id });
 
-    console.log("post", post);
     if (!post) {
       return res.status(404).json({ msg: "포스트가 없습니다." });
     }
 
-    // Check user
-    // if (post.user.toString() !== req.user.id) {
-    //   return res.status(401).json({ msg: 'User not authorized' });
-    // }
+    //Check user
+    if (post.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
 
-    //await post.remove();
+    await post.remove();
     res.json({ msg: "포스트가 삭제되었습니다" });
   } catch (err) {
     console.error(err.message);
@@ -119,14 +118,43 @@ router.put("/like/:id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    
+    // 좋아요가 있을때 (true)
     if (post.likes.some((like) => like.user.toString() === req.user.id)) {
-      return res.status(400).json({ msg: "이미 좋아요한 게시물 입니다" });
+      return res.status(400).json({ msg: "이미 좋아요한 게시물 입니다." });
     }
-    post.likes.unshift({ user: req.user.id });
 
+    post.likes.unshift({ user: req.user.id });
     await post.save();
     res.json(post.likes);
+  } catch (err) {
+    console.error(err.message);
+
+    res.status(500).send("Server error");
+  }
+});
+
+/**
+ *  @route  PUT api/posts/unlike/:id
+ *  @desc   unlike a post
+ *  @access private
+ */
+router.put("/unlike/:id", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    console.log("post11", post);
+
+    // 좋아요가 없을 때(false)
+    if (!post.likes.some((like) => like.user.toString() === req.user.id)) {
+      return res.status(400).json({ msg: "제거할 좋아요가 없습니다." });
+    }
+
+    // 좋아요 제거
+    post.likes = post.likes.filter(
+      ({ user }) => user.toString() !== req.user.id
+    );
+    console.log("remove", post);
+    await post.save();
+    return res.json(post.likes);
   } catch (err) {
     console.error(err.message);
 
