@@ -157,7 +157,61 @@ router.put("/unlike/:id", auth, async (req, res) => {
     return res.json(post.likes);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
+/**
+ *  @route  post api/posts/comment
+ *  @desc   create a comment
+ *  @access private
+ */
+router.post(
+  "/comment/:id",
+  auth,
+  [check("text", "글을 입력해주세요").notEmpty()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      const user = await User.findById(req.user.id).select("-password");
+      const post = await Post.findById(req.params.id);
+
+      const newComment = new Post({
+        text: req.body.text,
+        name: user.name,
+        avatar: user.avatar,
+        user: req.user.id,
+      });
+      post.comment.unshift(newComment);
+      await post.save();
+      res.json({ msg: "저장되었습니다.", post });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
+/**
+ *  @route  DELETE api/posts/comment/:id/:cmt_id
+ *  @desc   delete a comment
+ *  @access private
+ */
+router.delete("/comment/:id/:cmt_id", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    const removeIndex = post.comment
+      .map((itme) => itme.id)
+      .indexOf(req.params.exp_id);
+
+    post.comment.splice(removeIndex, 1);
+    await post.save();
+    res.json({ msg: " 삭제되었습니다." });
+  } catch (err) {
+    console.error(err.message);
     res.status(500).send("Server error");
   }
 });
