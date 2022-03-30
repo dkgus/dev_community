@@ -203,11 +203,20 @@ router.post(
 router.delete("/comment/:id/:cmt_id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    const removeIndex = post.comment
-      .map((itme) => itme.id)
-      .indexOf(req.params.exp_id);
 
-    post.comment.splice(removeIndex, 1);
+    const comment = post.comment.find(
+      (comment) => comment.id === req.params.cmt_id
+    );
+
+    if (!comment) {
+      return res.status(404).json({ msg: "comment가 존재하지 않습니다." });
+    }
+    if (comment.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "권한이 없습니다." });
+    }
+
+    //두 가지가 일치하지않으면( =해당 게시글이 아니면) 지우지않고 post.comment에 그대로 저장
+    post.comment = post.comment.filter(({ id }) => id !== req.params.cmt_id);
     await post.save();
     res.json({ msg: " 삭제되었습니다." });
   } catch (err) {
