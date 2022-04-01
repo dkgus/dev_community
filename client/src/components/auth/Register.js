@@ -18,7 +18,7 @@ const Register = () => {
     if (password !== password2) {
       console.log("비밀번호가 일치하지 않습니다");
     } else {
-      console.log("formData", formData);
+      console.log("SUCCESS");
     }
   };
 
