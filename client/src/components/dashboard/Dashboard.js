@@ -3,6 +3,7 @@ import React, { useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import DashboardAction from "./DashboardAction";
 import { getCurrentProfile } from "../../actions/profile";
 import Spinner from "../layout/Spinner";
 
@@ -24,7 +25,9 @@ const Dashboard = ({
         <i className="fas fa-user"></i>환영합니다 {user && user.name}님 :)
       </p>
       {profile !== null ? (
-        <Fragment>프로필있음</Fragment>
+        <Fragment>
+          <DashboardAction />
+        </Fragment>
       ) : (
         <Fragment>
           <p>프로필이 존재하지않습니다. 정보를 추가해주세요.</p>
