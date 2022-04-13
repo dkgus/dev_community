@@ -70,15 +70,14 @@ const EditProfile = ({
   const onSubmit = (e) => {
     e.preventDefault();
     createProfile(formData, navigate, true);
-    console.log("formData222", formData);
   };
 
   return (
     <div style={{ maxWidth: "60%", margin: "0 auto", paddingTop: "10%" }}>
-      <h1 className="large text-primary">Create Your Profile</h1>
+      <h1 className="large text-primary">Edit Your Profile</h1>
       <p className="lead">
         <i className="fas fa-user" />
-        Let's get some information to make your profile stand out
+        Add some changes to your profile
       </p>
 
       <small>* = required field</small>
