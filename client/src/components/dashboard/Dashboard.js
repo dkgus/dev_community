@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import DashboardAction from "./DashboardAction";
+import Experience from "../profile-forms/Experience";
+import Education from "../profile-forms/Education";
 import { getCurrentProfile } from "../../actions/profile";
 import Spinner from "../layout/Spinner";
 
@@ -19,7 +21,7 @@ const Dashboard = ({
   return loading && profile === null ? (
     <Spinner />
   ) : (
-    <Fragment>
+    <div style={{ padding: "5% 1% 3% 3%" }}>
       <h1 className="large text-primary">Dashboard</h1>
       <p className="lead">
         <i className="fas fa-user"></i>환영합니다 {user && user.name}님 :)
@@ -27,6 +29,8 @@ const Dashboard = ({
       {profile !== null ? (
         <Fragment>
           <DashboardAction />
+          <Experience experience={profile.experience} />
+          <Education education={profile.education} />
         </Fragment>
       ) : (
         <Fragment>
@@ -36,7 +40,7 @@ const Dashboard = ({
           </Link>
         </Fragment>
       )}
-    </Fragment>
+    </div>
   );
 };
 
