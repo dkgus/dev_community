@@ -87,7 +87,6 @@ router.post(
     }
     console.log(skills);
     console.log(profileFileds.skills);
-    //res.send("HELLO");
 
     //build social object
     profileFileds.social = {};
@@ -206,24 +205,11 @@ router.patch(
     }
 
     try {
-      Profile.findOne({ user: req.user.id }).then((profile) => {
-        console.log("req.user_id", req.user.id);
-        if (!profile) return;
+      const profile = await Profile.findOne({ user: req.user.id });
+      profile.experience.unshift(req.body);
+      await profile.save();
 
-        const newExp = {
-          title: req.body.title,
-          company: req.body.company,
-          from: req.body.from,
-          location: req.body.location,
-          to: req.body.to,
-          current: true,
-          description: req.body.description,
-        };
-
-        profile.experience.unshift(newExp);
-        profile.save();
-        res.json({ msg: "저장되었습니다.", profile });
-      });
+      res.json(profile);
     } catch (err) {
       console.error(err.message);
       res.status(500).json("Server Error");
@@ -270,26 +256,15 @@ router.patch(
     check("fieldofstudy", "전공을 입력해주세요").not().isEmpty(),
     check("from", "입학일을 기입해주세요").not().isEmpty(),
   ],
-  (req, res) => {
+  async (req, res) => {
     try {
-      Profile.findOne({ user: req.user.id }).then((profile) => {
-        console.log("req.user.id", req.user.id);
-        if (!profile) return;
+      const profile = await Profile.findOne({ user: req.user.id });
 
-        const newEdu = {
-          school: req.body.school,
-          degree: req.body.degree,
-          fieldofstudy: req.body.fieldofstudy,
-          from: req.body.from,
-          to: req.body.to,
-          current: false,
-          description: req.body.description,
-        };
+      profile.education.unshift(req.body);
 
-        profile.education.unshift(newEdu);
-        profile.save();
-        res.json({ msg: "저장되었습니다.", profile });
-      });
+      await profile.save();
+
+      res.json(profile);
     } catch (err) {
       console.error(err.message);
       res.status(500).json("Server Error");
