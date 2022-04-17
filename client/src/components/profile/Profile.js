@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { getProfileById } from "../../actions/profile";
 import Spinner from "../layout/Spinner";
+import ProfileTop from "./ProfileTop";
+import ProfileAbout from "./ProfileAbout";
 
 const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
   const { id } = useParams();
@@ -31,6 +33,10 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
                 프로필 편집하기
               </Link>
             )}
+          <div class="profile-grid my-1">
+            <ProfileTop profiles={profiles} />
+            <ProfileAbout profiles={profiles} />
+          </div>
         </>
       )}
     </>
