@@ -6,6 +6,8 @@ import { getProfileById } from "../../actions/profile";
 import Spinner from "../layout/Spinner";
 import ProfileTop from "./ProfileTop";
 import ProfileAbout from "./ProfileAbout";
+import ProfileExperience from "./ProfileExperience";
+import ProfileEducation from "./profileEducation";
 
 const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
   const [profileUser, setPrfilUser] = useState("");
@@ -57,6 +59,38 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
           <div className="profile-grid my-1">
             <ProfileTop profiles={profiles} profileUser={profileUser} />
             <ProfileAbout profiles={profiles} profileUser={profileUser} />
+            <div className="profile-exp bg-white p-2">
+              <h2 className="text-primary">Experience</h2>
+              {profiles.experience && profiles.experience.length > 0 ? (
+                <>
+                  {profiles &&
+                    profiles.experience.map((experience) => (
+                      <ProfileExperience
+                        key={experience._id}
+                        experience={experience}
+                      />
+                    ))}
+                </>
+              ) : (
+                <h4> 추가된 경험 항목이 없습니다.</h4>
+              )}
+            </div>
+            <div className="profile-edu bg-white p-2">
+              <h2 className="text-primary">Education</h2>
+              {profiles.education && profiles.education.length > 0 ? (
+                <>
+                  {profiles &&
+                    profiles.education.map((education) => (
+                      <ProfileEducation
+                        key={education._id}
+                        education={education}
+                      />
+                    ))}
+                </>
+              ) : (
+                <h4> 추가된 교육 항목이 없습니다.</h4>
+              )}
+            </div>
           </div>
         </>
       )}
