@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link, useParams } from "react-router-dom";
@@ -8,9 +8,30 @@ import ProfileTop from "./ProfileTop";
 import ProfileAbout from "./ProfileAbout";
 
 const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
+  const [profileUser, setPrfilUser] = useState("");
   const { id } = useParams();
   useEffect(() => {
+    // console.log("user", auth);
+    // console.log("auth.user", auth.user);
+    // console.log("auth.user.name", auth.user.name);
+    // console.log("auth.user._id", auth.user._id);
+    // console.log("profiles121221", profiles);
+    // console.log("profiles45454", profiles[0].user);
+    let changeUser = "";
+    for (let i = 0; i < profiles.length; i++) {
+      console.log("console1", profiles[i].user.name);
+      console.log("console2", profiles[i].user._id);
+
+      if (profiles[i].user._id === id) {
+        changeUser = profiles[i].user;
+        setPrfilUser(changeUser);
+      }
+      console.log("changeUser", changeUser);
+      console.log("1", profiles[i].user);
+    }
+
     getProfileById(id);
+    console.log("profileUser333", profileUser);
   }, [getProfileById, id]);
 
   return (
@@ -26,16 +47,16 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
           >
             프로필 리스트
           </Link>
-          {auth.isAuthenticated &&
-            auth.loading === false &&
-            auth.user._id === profiles.user._id && (
-              <Link to="/edit-profile" className="btn btn-dark">
-                프로필 편집하기
-              </Link>
-            )}
-          <div class="profile-grid my-1">
-            <ProfileTop profiles={profiles} />
-            <ProfileAbout profiles={profiles} />
+          {auth.isAuthenticated && auth.loading === false && (
+            //auth.user.id === profiles.user.id &&
+            <Link to="/edit-profile" className="btn btn-dark">
+              프로필 편집하기
+            </Link>
+          )}
+
+          <div className="profile-grid my-1">
+            <ProfileTop profiles={profiles} profileUser={profileUser} />
+            <ProfileAbout profiles={profiles} profileUser={profileUser} />
           </div>
         </>
       )}
@@ -43,11 +64,11 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
   );
 };
 
-Profile.propTypes = {
-  getProfileById: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired,
-};
+// Profile.propTypes = {
+//   getProfileById: PropTypes.func.isRequired,
+//   profile: PropTypes.array.isRequired,
+//   auth: PropTypes.object.isRequired,
+// };
 const mapStateToProps = (state) => ({
   profile: state.profile,
   auth: state.auth,
