@@ -8,6 +8,7 @@ import ProfileTop from "./ProfileTop";
 import ProfileAbout from "./ProfileAbout";
 import ProfileExperience from "./ProfileExperience";
 import ProfileEducation from "./profileEducation";
+import ProfileGithub from "./ProfileGithub";
 
 const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
   const [profileUser, setPrfilUser] = useState("");
@@ -19,17 +20,17 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
     // console.log("auth.user._id", auth.user._id);
     // console.log("profiles121221", profiles);
     // console.log("profiles45454", profiles[0].user);
+    //console.log("test", profiles[1].githubusername);
+
     let changeUser = "";
     for (let i = 0; i < profiles.length; i++) {
-      console.log("console1", profiles[i].user.name);
-      console.log("console2", profiles[i].user._id);
+      //console.log("console1", profiles[i].user.name);
+      //console.log("console2", profiles[i].user._id);
 
       if (profiles[i].user._id === id) {
         changeUser = profiles[i].user;
         setPrfilUser(changeUser);
       }
-      console.log("changeUser", changeUser);
-      console.log("1", profiles[i].user);
     }
 
     getProfileById(id);
@@ -44,7 +45,7 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
           <Link
             to="/profiles"
             className="btn btn-light"
-            style={{ paddingTop: "10%" }}
+            style={{ marginTop: "10%" }}
           >
             프로필 리스트
           </Link>
@@ -56,7 +57,10 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
               </Link>
             )}
 
-          <div className="profile-grid my-1">
+          <div
+            className="profile-grid my-1"
+            style={{ maxWidth: "80%", margin: "0 auto" }}
+          >
             <ProfileTop profiles={profiles} profileUser={profileUser} />
             <ProfileAbout profiles={profiles} profileUser={profileUser} />
             <div className="profile-exp bg-white p-2">
@@ -91,6 +95,9 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
                 <h4> 추가된 교육 항목이 없습니다.</h4>
               )}
             </div>
+            {profiles.githubusername && (
+              <ProfileGithub username={profiles.githubusername} />
+            )}
           </div>
         </>
       )}
@@ -98,11 +105,11 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
   );
 };
 
-Profile.propTypes = {
-  getProfileById: PropTypes.func.isRequired,
-  profile: PropTypes.array.isRequired,
-  auth: PropTypes.object.isRequired,
-};
+// Profile.propTypes = {
+//   getProfileById: PropTypes.func.isRequired,
+//   profile: PropTypes.array.isRequired,
+//   auth: PropTypes.object.isRequired,
+// };
 const mapStateToProps = (state) => ({
   profile: state.profile,
   auth: state.auth,
