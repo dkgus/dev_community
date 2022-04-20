@@ -113,9 +113,11 @@ export const createProfile =
       dispatch(
         setAlert(
           edit ? "프로필이 업데이트 되었습니다." : "프로필이 생성되었습니다.",
-          "success"
+          "success",
+          3000
         )
       );
+      navigate("/profiles");
       if (!edit) {
         navigate("/dashboard");
       }

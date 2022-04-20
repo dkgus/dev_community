@@ -33,7 +33,6 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
     }
 
     getProfileById(id);
-    console.log("profileUser333", profileUser);
   }, [getProfileById, id]);
 
   return (
@@ -49,12 +48,13 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
           >
             프로필 리스트
           </Link>
-          {auth.isAuthenticated && auth.loading === false && (
-            //auth.user.id === profiles.user.id &&
-            <Link to="/edit-profile" className="btn btn-dark">
-              프로필 편집하기
-            </Link>
-          )}
+          {auth.isAuthenticated &&
+            auth.loading === false &&
+            auth.user._id === id && (
+              <Link to="/edit-profile" className="btn btn-dark">
+                프로필 편집하기
+              </Link>
+            )}
 
           <div className="profile-grid my-1">
             <ProfileTop profiles={profiles} profileUser={profileUser} />
@@ -98,11 +98,11 @@ const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {
   );
 };
 
-// Profile.propTypes = {
-//   getProfileById: PropTypes.func.isRequired,
-//   profile: PropTypes.array.isRequired,
-//   auth: PropTypes.object.isRequired,
-// };
+Profile.propTypes = {
+  getProfileById: PropTypes.func.isRequired,
+  profile: PropTypes.array.isRequired,
+  auth: PropTypes.object.isRequired,
+};
 const mapStateToProps = (state) => ({
   profile: state.profile,
   auth: state.auth,

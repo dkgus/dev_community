@@ -21,12 +21,11 @@ import store from "./store";
 import setAuthToken from "./utils/setAuthToken";
 import { loadUser } from "./actions/auth";
 
-if (localStorage.token) {
-  setAuthToken(localStorage.token);
-}
-
 const App = () => {
   useEffect(() => {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+    }
     store.dispatch(loadUser());
   }, []);
   return (
@@ -37,10 +36,10 @@ const App = () => {
           <Alert />
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="login" element={<Login />} />
             <Route path="/profiles" element={<Profiles />} />
-            <Route path="profile/:id" element={<Profile />} />
+            <Route path="/profile/:id" element={<Profile />} />
 
             <Route
               path="dashboard"
