@@ -1,8 +1,9 @@
 import {
-  GET_POST,
+  GET_POSTS,
   POST_ERROR,
   DELETE_POST,
   UPDATE_LIKES,
+  ADD_POST,
 } from "../actions/types";
 
 const initialState = {
@@ -16,7 +17,7 @@ function postReducer(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case GET_POST:
+    case GET_POSTS:
       return {
         ...state,
         posts: payload,
@@ -32,6 +33,12 @@ function postReducer(state = initialState, action) {
       return {
         ...state,
         posts: state.posts.filter((post) => post._id !== payload),
+        loading: false,
+      };
+    case ADD_POST:
+      return {
+        ...state,
+        posts: [payload, ...state.posts],
         loading: false,
       };
     case UPDATE_LIKES:

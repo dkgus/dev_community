@@ -19,7 +19,7 @@ const PostItem = ({
   //   console.log("post.user", user);
   console.log("comments", comment);
   return (
-    <>
+    <div style={{ paddingBottom: "5%" }}>
       <div className="post bg-white p-1 my-1">
         <div>
           <Link to={`/profile/${user}`}>
@@ -42,7 +42,9 @@ const PostItem = ({
             className="btn btn-light"
           >
             <i className="fas fa-thumbs-up" />{" "}
-            <span>{likes.length > 0 && <span>{likes.length}</span>}</span>
+            <span>
+              {likes && likes.length > 0 && <span>{likes.length}</span>}
+            </span>
           </button>
           <button
             onClick={() => removeLike(_id)}
@@ -69,7 +71,7 @@ const PostItem = ({
           DELETE
         </button>
       )}
-    </>
+    </div>
   );
 };
 PostItem.defaultProps = {
