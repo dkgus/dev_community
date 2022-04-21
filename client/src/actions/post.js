@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setAlert } from "./alert";
 
-import { GET_POST, POST_ERROR, DELETE_POST } from "./types";
+import { GET_POST, POST_ERROR, DELETE_POST, UPDATE_LIKES } from "./types";
 
 /**
  * 전체  포스트 조회하기
@@ -33,7 +33,47 @@ export const deletePost = (id) => async (dispatch) => {
       type: DELETE_POST,
       payload: id,
     });
-    dispatch(setAlert("포스트가 삭제되었습니다", "success"));
+    dispatch(setAlert("포스트가 삭제되었습니다.", "success"));
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+/**
+ * 좋아요 추가
+ *
+ */
+export const addLike = (id) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/posts/like/${id}`);
+    dispatch({
+      type: UPDATE_LIKES,
+      payload: { id, likes: res.data },
+    });
+    dispatch(setAlert("좋아요를 눌렀습니다.", "success"));
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+/**
+ * 좋아요 제거
+ *
+ */
+export const removeLike = (id) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/posts/unlike/${id}`);
+    dispatch({
+      type: UPDATE_LIKES,
+      payload: { id, likes: res.data },
+    });
+    dispatch(setAlert("좋아요가 제거되었습니다.", "success"));
   } catch (err) {
     dispatch({
       type: POST_ERROR,
