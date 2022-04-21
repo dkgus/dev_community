@@ -7,7 +7,7 @@ import Spinner from "../layout/Spinner";
 import ProfileTop from "./ProfileTop";
 import ProfileAbout from "./ProfileAbout";
 import ProfileExperience from "./ProfileExperience";
-import ProfileEducation from "./profileEducation";
+import ProfileEducation from "./ProfileEducation";
 import ProfileGithub from "./ProfileGithub";
 
 const Profile = ({ getProfileById, profile: { profiles, loading }, auth }) => {

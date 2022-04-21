@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getPosts } from "../../actions/post";
@@ -8,7 +8,6 @@ import Spinner from "../layout/Spinner";
 const Posts = ({ getPosts, post: { posts, loading } }) => {
   useEffect(() => {
     getPosts();
-    console.log("posts", posts);
   }, [getPosts]);
   return loading ? (
     <Spinner />
@@ -21,7 +20,7 @@ const Posts = ({ getPosts, post: { posts, loading } }) => {
       {/* postForm */}
       <div className="posts">
         {posts.map((post) => (
-          <PostItem key={post._id} post={post} />
+          <PostItem key={post._id} posts={post} />
         ))}
       </div>
     </>
