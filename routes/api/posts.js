@@ -34,7 +34,7 @@ router.post(
       });
 
       const post = await newPost.save();
-      res.json({ msg: "정상적으로 등록되었습니다", post });
+      res.json(post);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server error");
