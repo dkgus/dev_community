@@ -3,10 +3,12 @@ import { setAlert } from "./alert";
 
 import {
   GET_POSTS,
+  GET_POST,
   POST_ERROR,
   DELETE_POST,
   UPDATE_LIKES,
   ADD_POST,
+  REMOVE_COMMENT,
 } from "./types";
 
 /**
@@ -18,6 +20,25 @@ export const getPosts = () => async (dispatch) => {
     const res = await axios.get("/api/posts");
     dispatch({
       type: GET_POSTS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+/**
+ * 아이디별 포스트 조회
+ *
+ */
+export const getPost = (id) => async (dispatch) => {
+  try {
+    const res = await axios.get(`/api/posts/${id}`);
+    dispatch({
+      type: GET_POST,
       payload: res.data,
     });
   } catch (err) {
@@ -105,6 +126,28 @@ export const removeLike = (id) => async (dispatch) => {
       payload: { id, likes: res.data },
     });
     dispatch(setAlert("좋아요가 제거되었습니다.", "success"));
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+/**
+ * 덧글 삭제
+ *
+ */
+export const deleteComment = (postId, commentId) => async (dispatch) => {
+  try {
+    await axios.delete(`/api/posts/comment/${postId}/${commentId}`);
+
+    dispatch({
+      type: REMOVE_COMMENT,
+      payload: commentId,
+    });
+
+    dispatch(setAlert("Comment Removed", "success"));
   } catch (err) {
     dispatch({
       type: POST_ERROR,

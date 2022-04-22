@@ -17,7 +17,6 @@ const PostItem = ({
   //   console.log("auth", auth.user._id);
   //   console.log("posts1", _id);
   //   console.log("post.user", user);
-  console.log("comments", comment);
   return (
     <div style={{ paddingBottom: "5%" }}>
       <div className="post bg-white p-1 my-1">
@@ -76,14 +75,6 @@ const PostItem = ({
 };
 PostItem.defaultProps = {
   showActions: true,
-};
-PostItem.propTypes = {
-  post: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired,
-  addLike: PropTypes.func.isRequired,
-  removeLike: PropTypes.func.isRequired,
-  deletePost: PropTypes.func.isRequired,
-  showActions: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({

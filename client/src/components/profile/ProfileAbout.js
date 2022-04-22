@@ -6,7 +6,6 @@ const ProfileAbout = ({ profiles: { bio, skills }, profileUser }) => {
 
   return (
     <>
-      111
       <div className="profile-about bg-light p-2">
         {bio && (
           <>

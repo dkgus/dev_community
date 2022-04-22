@@ -218,7 +218,7 @@ router.delete("/comment/:id/:cmt_id", auth, async (req, res) => {
     //두 가지가 일치하지않으면( =해당 게시글이 아니면) 지우지않고 post.comment에 그대로 저장
     post.comment = post.comment.filter(({ id }) => id !== req.params.cmt_id);
     await post.save();
-    res.json({ msg: " 삭제되었습니다." });
+    res.json(post.comment);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
