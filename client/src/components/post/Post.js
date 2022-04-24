@@ -1,15 +1,19 @@
 import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import { Link, useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { getPost } from "../../actions/post";
 import Spinner from "../layout/Spinner";
 import PostItem from "../posts/PostItem";
-import CommentItem from "./CommentItem";
+import CommentForm from "../post/CommentForm";
+import CommentItem from "../post/CommentItem";
+import { getPost } from "../../actions/post";
+
 const Post = ({ getPost, post: { post, loading } }) => {
   const { id } = useParams();
   useEffect(() => {
     getPost(id);
-  }, [getPost]);
+  }, [getPost, id]);
+
   return loading || post === null ? (
     <Spinner />
   ) : (
@@ -17,12 +21,13 @@ const Post = ({ getPost, post: { post, loading } }) => {
       <Link to="/posts" className="btn">
         Back To Posts
       </Link>
-      <PostItem posts={post} showActions={false} postId={post._id} />
+      <PostItem posts={post} showActions={false} />
+      <CommentForm postId={post._id} />
       <div className="comments">
         {post.comment &&
           post.comment.map((comment) => (
             <CommentItem
-              key={comment._id}
+              kdey={comment._id}
               comment={comment}
               postId={post._id}
             />
@@ -30,6 +35,11 @@ const Post = ({ getPost, post: { post, loading } }) => {
       </div>
     </section>
   );
+};
+
+Post.propTypes = {
+  getPost: PropTypes.func.isRequired,
+  post: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

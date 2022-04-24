@@ -5,6 +5,7 @@ import {
   UPDATE_LIKES,
   ADD_POST,
   GET_POST,
+  ADD_COMMENT,
   REMOVE_COMMENT,
 } from "../actions/types";
 
@@ -57,12 +58,18 @@ function postReducer(state = initialState, action) {
           post._id === payload.id ? { ...post, likes: payload.likes } : post
         ),
       };
+    case ADD_COMMENT:
+      return {
+        ...state,
+        post: { ...state.post, comments: payload },
+        loading: false,
+      };
     case REMOVE_COMMENT:
       return {
         ...state,
         post: {
           ...state.post,
-          comments: state.post.comments.filter(
+          comment: state.post.comment.filter(
             (comment) => comment._id !== payload
           ),
         },

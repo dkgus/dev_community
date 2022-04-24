@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
 import { connect } from "react-redux";
@@ -10,6 +9,7 @@ const CommentItem = ({
   postId,
   comment: { _id, user, name, text, avatar, date },
   deleteComment,
+  auth,
 }) => {
   console.log("_id", _id);
   console.log("text", text);
@@ -28,17 +28,21 @@ const CommentItem = ({
         <p className="post-date">
           작성일: <Moment format="YYYY/MM/DD">{date}</Moment>
         </p>
-
-        <button
-          onClick={() => deleteComment(postId, _id)}
-          type="button"
-          className="btn btn-danger"
-        >
-          DELETE
-        </button>
+        {auth.user._id === user && (
+          <button
+            onClick={() => deleteComment(postId, _id)}
+            type="button"
+            className="btn btn-danger"
+          >
+            DELETE
+          </button>
+        )}
       </div>
     </div>
   );
 };
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
 
-export default connect(null, { deleteComment })(CommentItem);
+export default connect(mapStateToProps, { deleteComment })(CommentItem);

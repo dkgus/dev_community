@@ -8,6 +8,7 @@ import {
   DELETE_POST,
   UPDATE_LIKES,
   ADD_POST,
+  ADD_COMMENT,
   REMOVE_COMMENT,
 } from "./types";
 
@@ -148,6 +149,35 @@ export const deleteComment = (postId, commentId) => async (dispatch) => {
     });
 
     dispatch(setAlert("Comment Removed", "success"));
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+/**
+ * 덧글 추가
+ *
+ */
+export const addComment = (postId, formData) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  try {
+    const res = await axios.post(
+      `/api/posts/comment/${postId}`,
+      formData,
+      config
+    );
+    dispatch({
+      type: ADD_COMMENT,
+      payload: res.data,
+    });
+    dispatch(setAlert("덧글이 추가되었습니다.", "success"));
   } catch (err) {
     dispatch({
       type: POST_ERROR,
