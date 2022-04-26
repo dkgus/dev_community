@@ -1,9 +1,6 @@
 import React from "react";
 
 const ProfileAbout = ({ profiles: { bio, skills }, profileUser }) => {
-  console.log("bio", bio);
-  console.log("skills", skills);
-
   return (
     <>
       <div className="profile-about bg-light p-2">
